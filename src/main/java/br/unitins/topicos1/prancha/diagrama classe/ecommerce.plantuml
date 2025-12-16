@@ -1,0 +1,146 @@
+@startuml ecommerce
+
+class Cliente {
+  - cpf: String
+}
+
+class Administrador {
+  - cargo: String
+  - statusAdm: String
+}
+
+class Pedido {
+  - idPedido: Integer
+  - dataPedido: LocalDateTime
+  - endereco: Endereco
+  - cliente: Cliente
+  - pagamento: Pagamento
+  - itens: ItemPedido[]
+  - valorTotal: double
+}
+
+class ItemPedido {
+  - idItem: Integer
+  - pedido: Pedido
+  - prancha: Prancha
+  - quantidade: Integer
+  - precoUnit: double
+  - subTotal: double
+}
+
+class Pagamento {
+  - idPagamento: Integer
+  - dataPagamento: LocalDateTime
+  - statusPagamento: String
+}
+
+class Cartao {
+  - numeroCartao: String
+  - nomeTitular: String
+  - dataVencimento: LocalDate
+}
+
+class Pix {
+  - chave: String
+}
+
+class Boleto {
+  - codigoBarras: String
+  - dataVencimento: LocalDate
+}
+
+class Endereco {
+  - cidade: String
+  - estado: String
+  - cep: String
+}
+
+class Prancha {
+  - id: Long
+  - tipoPrancha: TipoPrancha
+  - habilidade: Habilidade
+  - tamanho: float
+  - valor: double
+  - estoque: Integer
+  - fornecedores: Fornecedor[]
+  - modelo: Modelo
+  - quilhas: Quilha[]
+}
+
+enum TipoPrancha {
+  + FISH: int
+  + SHORTBOARD: int
+  + HIBRIDAS: int
+  + GUN: int
+  + FUNBOARD: int
+  + LONGBOARD: int
+}
+
+enum Habilidade {
+  + INICIANTE: int
+  + INTERMEDIARIO: int
+  + AVANCADO: int
+}
+
+class Fornecedor {
+  - cnpj: String
+}
+
+class Marca {
+  - id: Long
+  - nome: String
+  - paisOrigem: String
+}
+
+class Modelo {
+  - id: Long
+  - nome: String
+  - marca: Marca
+}
+
+class Quilha {
+  - id: Long
+  - tipoQuilha: TipoQuilha
+  - descricaoQuilha: String
+}
+
+class TipoQuilha {
+  - id: Long
+  - nome: String
+}
+
+class Pessoa {
+  - id: Long
+  - nome: String
+  - telefone: Telefone
+}
+
+class Telefone {
+  - ddd: String
+  - numero: String
+}
+
+Cliente --|> Pessoa
+Administrador --|> Pessoa
+Fornecedor --|> Pessoa
+
+Pedido "1" *-- "1" Pagamento
+Pagamento <|-- Cartao
+Pagamento <|-- Pix
+Pagamento <|-- Boleto
+
+Pedido "*" --> "1" Cliente
+Pedido "1" *-- "1" Endereco
+Pedido "1" *-- "*" ItemPedido
+ItemPedido "*" --> "1" Prancha
+
+Prancha "*" -- "*" Fornecedor
+Prancha "*" -- "1" TipoPrancha
+Prancha "*" -- "1" Habilidade
+Marca "1" *-- "*" Modelo
+Modelo "1" --o "*" Prancha
+Prancha "*" o-- "*" Quilha
+Quilha "*" o-- "1" TipoQuilha
+Pessoa "1" *-- "1" Telefone
+
+@enduml 

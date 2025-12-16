@@ -1,0 +1,77 @@
+@startuml pranchas
+
+class Prancha {
+  - id: Long
+  - tipoPrancha: TipoPrancha
+  - habilidade: Habilidade
+  - tamanho: float
+  - valor: double
+  - fornecedores: Fornecedor[]
+  - modelo: Modelo
+  - quilhas: Quilha[]
+}
+
+enum TipoPrancha {
+  + FISH: int
+  + SHORTBOARD: int
+  + HIBRIDAS: int
+  + GUN: int
+  + FUNBOARD: int
+  + LONGBOARD: int
+}
+
+enum Habilidade {
+  + INICIANTE: int
+  + INTERMEDIARIO: int
+  + AVANCADO: int
+}
+
+class Fornecedor {
+  - cnpj: String
+}
+
+class Marca {
+  - id: Long
+  - nome: String
+  - paisOrigem: String
+}
+
+class Modelo {
+  - id: Long
+  - nome: String
+  - marca: Marca
+}
+
+class Quilha {
+  - id: Long
+  - tipoQuilha: TipoQuilha
+  - descricaoQuilha: String
+}
+
+class TipoQuilha {
+  - id: Long
+  - nome: String
+}
+
+class Pessoa {
+  - id: Long
+  - nome: String
+  - telefone: Telefone
+}
+
+class Telefone {
+  - ddd: String
+  - numero: String
+}
+
+Prancha "*" –- "*" Fornecedor
+Prancha "*" -- "1" TipoPrancha
+Prancha "*" -- "1" Habilidade
+Marca "1" *-- "*" Modelo
+Modelo "1" --o "*" Prancha
+Prancha "*" o-- "*" Quilha
+Quilha "*" o-- "1" TipoQuilha
+Fornecedor --|> Pessoa
+Pessoa "1" *-- "1" Telefone
+
+@enduml

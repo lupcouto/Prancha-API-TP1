@@ -1,34 +1,36 @@
 package br.unitins.topicos1.prancha.model;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 @Entity
 public class Usuario extends DefaultEntity {
 
     private String nome;
-    private String cpf;
-    private String email;
+
+    @Column(unique = true)
+    private String login;
+    private String senha;
+    
+    private Perfil perfil;
 
     public String getNome() {
         return nome;
     }
-    
-    public void setNome(String nome) {
-        this.nome = nome;
+
+    public String getLogin() {
+        return login;
     }
 
-    public String getCpf() {
-        return cpf;
-    }
-    
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public String getSenha() {
+        return senha;
     }
 
-    public String getEmail() {
-        return email;
+    public Perfil getPerfil() {
+        return perfil;
     }
-    
-    public void setEmail(String email) {
-        this.email = email;
+
+    public void setPerfil(Perfil perfil) {
+        this.perfil = perfil;
     }
+
 }
