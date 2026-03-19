@@ -28,14 +28,12 @@ public class MarcaResource {
 
     // busca todas as marcas
     @GET
-    @RolesAllowed({"ADM","USER"})
     public List<Marca> getAll() {
         return service.findAll();
     }
 
     // busca todas as marcas com um determinado nome
     @GET
-    @RolesAllowed({"ADM","USER"})
     @Path("/nome/{nome}")
     public List<Marca> getByNome(@PathParam("nome")String nome) {
         return service.findByNome(nome);
@@ -43,7 +41,6 @@ public class MarcaResource {
 
     // cadastra uma nova marca
     @POST
-    @RolesAllowed("ADM")
     public Response incluir(@Valid MarcaDTO dto) {
         var marca = service.create(dto);
         return Response.status(Response.Status.CREATED).entity(marca).build();
@@ -51,7 +48,6 @@ public class MarcaResource {
 
     // altera uma marca existente
     @PUT
-    @RolesAllowed("ADM")
     @Path("/{id}")
     public Response alterar(@PathParam("id") Long id, @Valid MarcaDTO dto) {
         service.update(id, dto);
@@ -60,7 +56,6 @@ public class MarcaResource {
 
     // deleta uma marca existente
     @DELETE
-    @RolesAllowed("ADM")
     @Path("/{id}")
     public Response delete(@PathParam("id") Long id) {
         service.delete(id);
