@@ -1,11 +1,14 @@
 package br.unitins.topicos1.prancha.service;
+
 import java.util.List;
 import br.unitins.topicos1.prancha.dto.ModeloDTO;
+import br.unitins.topicos1.prancha.dto.PageResponse;
 import br.unitins.topicos1.prancha.exception.ValidationException;
 import br.unitins.topicos1.prancha.model.Marca;
 import br.unitins.topicos1.prancha.model.Modelo;
 import br.unitins.topicos1.prancha.repository.MarcaRepository;
 import br.unitins.topicos1.prancha.repository.ModeloRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -24,18 +27,28 @@ public class ModeloServiceImpl implements ModeloService {
 
     // busca todos os registros no banco
     @Override
-    public List<Modelo> findAll() {
-        LOG.info("Buscando todos os modelos cadastrados");
+    public PageResponse<Modelo> findAll(int page, int pageSize, String nome) {
 
-        List<Modelo> listaModelos = modeloRepository.listAll();
+        LOG.info("Buscando modelos paginados");
 
-        if (listaModelos.isEmpty()) {
-            LOG.warn("Nenhum modelo encontrado");
-            throw ValidationException.of("Lista de Modelos", "Nenhum modelo cadastrado");
+        PanacheQuery<Modelo> query;
+
+        if (nome == null || nome.trim().isEmpty()) {
+            query = modeloRepository.findAll(); 
+        } else {
+            query = modeloRepository.findByNomePaginado(nome);
         }
 
-        LOG.info("Total de modelos encontrados: " + listaModelos.size());
-        return listaModelos;
+        query.page(page, pageSize);
+
+        PageResponse<Modelo> response = new PageResponse<>();
+        response.content = query.list();
+        response.totalRegistros = query.count();
+        response.totalPaginas = query.pageCount();
+        response.pagina = page;
+        response.pageSize = pageSize;
+
+        return response;
     }
 
     // busca todos os registros pelo nome no banco

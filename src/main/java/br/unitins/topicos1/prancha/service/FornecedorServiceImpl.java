@@ -1,10 +1,13 @@
 package br.unitins.topicos1.prancha.service;
+
 import java.util.List;
 import br.unitins.topicos1.prancha.dto.FornecedorDTO;
+import br.unitins.topicos1.prancha.dto.PageResponse;
 import br.unitins.topicos1.prancha.exception.ValidationException;
 import br.unitins.topicos1.prancha.model.Fornecedor;
 import br.unitins.topicos1.prancha.model.Telefone;
 import br.unitins.topicos1.prancha.repository.FornecedorRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -20,18 +23,28 @@ public class FornecedorServiceImpl implements FornecedorService {
 
     // busca todos os registros no banco
     @Override
-    public List<Fornecedor> findAll() {
-        LOG.info("Buscando todos os fornecedores cadastrados");
+    public PageResponse<Fornecedor> findAll(int page, int pageSize, String cnpj) {
 
-        List<Fornecedor> listaFornecedor = fornecedorRepository.listAll();
+        LOG.info("Buscando fornecedores paginados");
 
-        if (listaFornecedor.isEmpty()) {
-            LOG.warn("Nenhum fornecedor encontrado");
-            throw ValidationException.of("Lista de Fornecedores", "Nenhum fornecedor cadastrado");
+        PanacheQuery<Fornecedor> query;
+
+        if (cnpj == null || cnpj.isBlank()) {
+            query = fornecedorRepository.findAll();
+        } else {
+            query = fornecedorRepository.find("cnpj like ?1", "%" + cnpj + "%");
         }
 
-        LOG.info("Total de fornecedores encontrados: " + listaFornecedor.size());
-        return listaFornecedor;
+        query.page(page, pageSize);
+
+        PageResponse<Fornecedor> response = new PageResponse<>();
+        response.content = query.list();
+        response.totalRegistros = query.count();
+        response.totalPaginas = query.pageCount();
+        response.pagina = page;
+        response.pageSize = pageSize;
+
+        return response;
     }
 
     // busca todos os registros pelo cnpj no banco

@@ -1,6 +1,9 @@
 package br.unitins.topicos1.prancha.service;
+
 import java.util.List;
 import org.jboss.logging.Logger;
+
+import br.unitins.topicos1.prancha.dto.PageResponse;
 import br.unitins.topicos1.prancha.dto.QuilhaDTO;
 import br.unitins.topicos1.prancha.exception.ValidationException;
 import br.unitins.topicos1.prancha.model.Quilha;
@@ -24,18 +27,25 @@ public class QuilhaServiceImpl implements QuilhaService {
 
     // busca todos os registros no banco
     @Override
-    public List<Quilha> findAll() {
-        LOG.info("Buscando todas as quilhas...");
+    public PageResponse<Quilha> findAll(int page, int pageSize) {
 
-        List<Quilha> listaQuilhas = quilhaRepository.listAll();
+        LOG.info("Buscando quilhas paginadas...");
 
-        if (listaQuilhas.isEmpty()) {
-            LOG.warn("Nenhuma quilha cadastrada encontrada.");
-            throw ValidationException.of("Lista de Quilhas", "Nenhuma quilha cadastrada");
+        if (pageSize > 100) {
+            pageSize = 100;
         }
 
-        LOG.info("Quilhas encontradas: " + listaQuilhas.size());
-        return listaQuilhas;
+        var query = quilhaRepository.findAll();
+        query.page(page, pageSize);
+
+        PageResponse<Quilha> response = new PageResponse<>();
+        response.content = query.list();
+        response.totalRegistros = query.count();
+        response.totalPaginas = query.pageCount();
+        response.pagina = page;
+        response.pageSize = pageSize;
+
+        return response;
     }
 
     // busca todos os registros pelo tipo de quilha no banco

@@ -37,14 +37,11 @@ public class PranchaServiceImpl implements PranchaService {
     @Override
     public List<Prancha> findAll() {
         LOG.info("Buscando todas as pranchas...");
-
         List<Prancha> listaPranchas = repository.listAll();
-
         if (listaPranchas.isEmpty()) {
             LOG.warn("Nenhuma prancha cadastrada.");
             throw ValidationException.of("Lista de Pranchas", "Nenhuma prancha cadastrada");
         }
-
         LOG.info("Total de pranchas encontradas: " + listaPranchas.size());
         return listaPranchas;
     }
@@ -189,7 +186,7 @@ public class PranchaServiceImpl implements PranchaService {
         prancha.setTipoPrancha(dto.tipoPrancha());
         prancha.setHabilidade(dto.habilidade());
         prancha.setModelo(modelo);
-        prancha.setQuilhas(List.of(quilha)); 
+        prancha.setQuilhas(List.of(quilha));
         prancha.setFornecedores(List.of(fornecedor));
 
         LOG.info("Prancha atualizada com sucesso. ID = " + id);

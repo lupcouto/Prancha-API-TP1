@@ -1,9 +1,12 @@
 package br.unitins.topicos1.prancha.service;
+
 import java.util.List;
 import br.unitins.topicos1.prancha.dto.MarcaDTO;
+import br.unitins.topicos1.prancha.dto.PageResponse;
 import br.unitins.topicos1.prancha.exception.ValidationException;
 import br.unitins.topicos1.prancha.model.Marca;
 import br.unitins.topicos1.prancha.repository.MarcaRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,18 +22,18 @@ public class MarcaServiceImpl implements MarcaService {
 
     // busca todos os registros no banco
     @Override
-    public List<Marca> findAll() {
-        LOG.info("Buscando todas as marcas");
+    public PageResponse<Marca> findAll(int page, int pageSize, String nome) {
 
-        List<Marca> listaMarcas = marcaRepository.listAll();
-
-        if (listaMarcas.isEmpty()) {
-            LOG.warn("Nenhuma marca encontrada");
-            throw ValidationException.of("Lista de Marcas", "Nenhuma marca cadastrada");
-        }
-
-        LOG.info("Total de marcas encontradas: " + listaMarcas.size());
-        return listaMarcas;
+        LOG.info("Buscando marcas paginadas");
+        PanacheQuery<Marca> query = marcaRepository.findByNomePaginado(nome);
+        query.page(page, pageSize);
+        PageResponse<Marca> response = new PageResponse<>();
+        response.content = query.list();
+        response.totalRegistros = query.count();
+        response.totalPaginas = query.pageCount();
+        response.pagina = page;
+        response.pageSize = pageSize;
+        return response;
     }
 
     // busca todos os registros pelo nome no banco

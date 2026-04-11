@@ -9,6 +9,12 @@ class Prancha {
   - fornecedores: Fornecedor[]
   - modelo: Modelo
   - quilhas: Quilha[]
+
+  + getAll()
+  + getByTipoPrancha()
+  + incluir()
+  + alterar()
+  + deletar()
 }
 
 enum TipoPrancha {
@@ -28,29 +34,60 @@ enum Habilidade {
 
 class Fornecedor {
   - cnpj: String
+  
+  + getAll()
+  + getByCnpj()
+  + incluir()
+  + alterar()
+  + delete()
 }
 
 class Marca {
   - id: Long
   - nome: String
   - paisOrigem: String
+
+  + getAll()
+  + getByNome()
+  + incluir()
+  + alterar()
+  + delete()
 }
 
 class Modelo {
   - id: Long
   - nome: String
   - marca: Marca
+  
+  + getAll()
+  + getByNome()
+  + incluir()
+  + alterar()
+  + deletar()
 }
 
 class Quilha {
   - id: Long
   - tipoQuilha: TipoQuilha
   - descricaoQuilha: String
+  
+  + getAll()
+  + getByTipoQuilha()
+  + getById
+  + incluir()
+  + alterar()
+  + deletar()
 }
 
 class TipoQuilha {
   - id: Long
   - nome: String
+  
+  + getAll()
+  + getByNome()
+  + incluir()
+  + alterar()
+  + deletar()
 }
 
 class Pessoa {
