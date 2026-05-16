@@ -32,22 +32,29 @@ public class FornecedorResource {
 
     // busca todos os fornecedores
     @GET
-    // @RolesAllowed({"ADM","USER"})
-    public Response getAll(@QueryParam("page") @DefaultValue("0") int page,@QueryParam("pageSize") @DefaultValue("10") int pageSize,@QueryParam("cnpj") String cnpj) {
+    @RolesAllowed({"ADM","USER"})
+    public Response getAll(@QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("pageSize") @DefaultValue("10") int pageSize, @QueryParam("cnpj") String cnpj) {
         return Response.ok(service.findAll(page, pageSize, cnpj)).build();
     }
 
     // busca todos os fornecedores com um determinado cnpj
     @GET
-    // @RolesAllowed({"ADM","USER"})
+    @RolesAllowed({"ADM","USER"})
     @Path("/cnpj/{cnpj}")
     public List<Fornecedor> getByCnpj(@PathParam("cnpj") String cnpj) {
         return service.findByCnpj(cnpj);
     }
 
+    @GET
+    @Path("/{id}")
+    public Response getById(@PathParam("id") Long id) {
+        return Response.ok(service.findById(id)).build();
+    }
+
     // cadastra um novo fornecedor
     @POST
-    // @RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     public Response incluir(@Valid FornecedorDTO dto) {
         var fornecedor = service.create(dto);
         return Response.status(Response.Status.CREATED).entity(fornecedor).build();
@@ -55,7 +62,7 @@ public class FornecedorResource {
 
     // altera um fornecedor já existente
     @PUT
-    // @RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     @Path("/{id}")
     public Response alterar(@PathParam("id") Long id, @Valid FornecedorDTO dto) {
         service.update(id, dto);
@@ -64,7 +71,7 @@ public class FornecedorResource {
 
     // deleta um fornecedor já existente
     @DELETE
-    // @RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     @Path("/{id}")
     public Response delete(@PathParam("id") Long id) {
         service.delete(id);

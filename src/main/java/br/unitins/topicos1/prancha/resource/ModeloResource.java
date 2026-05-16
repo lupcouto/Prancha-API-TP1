@@ -32,22 +32,29 @@ public class ModeloResource {
 
     // busca todos os modelos
     @GET
-    // @RolesAllowed({"ADM","USER"})
-    public Response getAll(@QueryParam("page") @DefaultValue("0") int page,@QueryParam("pageSize") @DefaultValue("10") int pageSize,@QueryParam("nome") String nome) {
+    @RolesAllowed({"ADM","USER"})
+    public Response getAll(@QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("pageSize") @DefaultValue("10") int pageSize, @QueryParam("nome") String nome) {
         return Response.ok(service.findAll(page, pageSize, nome)).build();
     }
 
     // busca todos os modelos com um determinado nome
     @GET
-    // @RolesAllowed({"ADM","USER"})
+    @RolesAllowed({"ADM","USER"})
     @Path("/nome/{nome}")
     public List<Modelo> getByNome(@PathParam("nome") String nome) {
         return service.findByNome(nome);
     }
 
+    @GET
+    @Path("/{id}")
+    public Response getById(@PathParam("id") Long id) {
+        return Response.ok(service.findById(id)).build();
+    }
+
     // cadastra um modelo novo
     @POST
-    // @RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     public Response incluir(@Valid ModeloDTO dto) {
         var modelo = service.create(dto);
         return Response.status(Response.Status.CREATED).entity(modelo).build();
@@ -55,7 +62,7 @@ public class ModeloResource {
 
     // altera um modelo existente
     @PUT
-    // @RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     @Path("/{id}")
     public Response alterar(@PathParam("id") Long id, @Valid ModeloDTO dto) {
         service.update(id, dto);
@@ -64,7 +71,7 @@ public class ModeloResource {
 
     // deleta um modelo existente
     @DELETE
-    // @RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     @Path("/{id}")
     public Response delete(@PathParam("id") Long id) {
         service.delete(id);

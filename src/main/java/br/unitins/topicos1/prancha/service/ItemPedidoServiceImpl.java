@@ -1,4 +1,5 @@
 package br.unitins.topicos1.prancha.service;
+
 import java.util.List;
 import br.unitins.topicos1.prancha.dto.ItemPedidoDTO;
 import br.unitins.topicos1.prancha.exception.ValidationException;
@@ -25,7 +26,8 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
     @Inject
     PranchaRepository pranchaRepository;
 
-    // método para buscar o pedido no banco, validar o id e garantir que o pedido exista antes de criar/atualizar um item
+    // método para buscar o pedido no banco, validar o id e garantir que o pedido
+    // exista antes de criar/atualizar um item
     private Pedido buscarPedido(Long idPedido) {
 
         // validações nos campos obrigatórios
@@ -39,7 +41,8 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
         return pedido;
     }
 
-    // método para buscar a prancha no banco, validar o id e garantir que a prancha exista antes de criar/atualizar um itemn
+    // método para buscar a prancha no banco, validar o id e garantir que a prancha
+    // exista antes de criar/atualizar um itemn
     private Prancha buscarPrancha(Long idPrancha) {
 
         // validações nos campos obrigatórios
@@ -70,7 +73,7 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
             throw ValidationException.of("idPedido", "id de Pedido inválido.");
         }
 
-        List<ItemPedido> listaItens = itemPedidoRepository.findByPedido(idPedido); 
+        List<ItemPedido> listaItens = itemPedidoRepository.findByPedido(idPedido);
         if (listaItens.isEmpty()) {
             throw ValidationException.of("idPedido", "Nenhum item encontrado para o Pedido informado.");
         }
@@ -93,7 +96,7 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
         return itemPedido;
     }
 
-    // criando um item 
+    // criando um item
     @Override
     @Transactional
     public ItemPedido create(Long idPedido, @Valid ItemPedidoDTO dto) {
@@ -112,8 +115,8 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
         itemPedido.setPedido(pedido);
         itemPedido.setPrancha(prancha);
         itemPedido.setQuantidade(dto.quantidade());
-        itemPedido.setPrecoUnit(dto.precoUnit());
-        itemPedido.setSubTotal(dto.precoUnit() * dto.quantidade()); // calcula o subtotal
+        itemPedido.setPrecoUnit(prancha.getValor());
+        itemPedido.setSubTotal(prancha.getValor() * dto.quantidade()); // calcula o subtotal
 
         itemPedidoRepository.persist(itemPedido);
 
@@ -139,8 +142,8 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
         item.setPedido(pedido);
         item.setPrancha(prancha);
         item.setQuantidade(dto.quantidade());
-        item.setPrecoUnit(dto.precoUnit());
-        item.setSubTotal(dto.precoUnit() * dto.quantidade()); // recalcula o subtotal
+        item.setPrecoUnit(prancha.getValor());
+        item.setSubTotal(prancha.getValor() * dto.quantidade()); // recalcula o subtotal
     }
 
     // deletando um item
@@ -161,5 +164,5 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
         // deleta o item no banco
         itemPedidoRepository.delete(itemPedido);
     }
-    
+
 }

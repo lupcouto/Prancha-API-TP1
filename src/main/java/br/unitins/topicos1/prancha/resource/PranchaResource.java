@@ -1,10 +1,10 @@
 package br.unitins.topicos1.prancha.resource;
-
 import java.util.List;
 import br.unitins.topicos1.prancha.dto.PranchaDTO;
 import br.unitins.topicos1.prancha.model.Prancha;
 import br.unitins.topicos1.prancha.model.TipoPrancha;
 import br.unitins.topicos1.prancha.service.PranchaService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -33,22 +33,29 @@ public class PranchaResource {
 
     // busca todas as pranchas
     @GET
-    // @RolesAllowed({"ADM","USER"})
+    @PermitAll
     public List<Prancha> getAll() {
         return service.findAll();
     }
 
     // busca todas as pranchas com um determinado tipo
     @GET
-    // @RolesAllowed({"ADM","USER"})
+    @PermitAll
     @Path("/tipo/{tipoPrancha}")
     public List<Prancha> getByTipoPrancha(@PathParam("tipoPrancha") TipoPrancha tipoPrancha) {
         return service.findByTipoPrancha(tipoPrancha);
     }
 
+    @GET
+    @PermitAll
+    @Path("/{id}")
+    public Response getById(@PathParam("id") Long id) {
+        return Response.ok(service.findById(id)).build();
+    }
+
     // cadastra uma nova prancha
     @POST
-    // @RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     public Response incluir(@Valid PranchaDTO dto) {
         var prancha = service.create(dto);
         return Response.status(Response.Status.CREATED).entity(prancha).build();
@@ -56,7 +63,7 @@ public class PranchaResource {
 
     // altera uma prancha existente
     @PUT
-    // @RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     @Path("/{id}")
     public Response alterar(@PathParam("id") Long id, @Valid PranchaDTO dto) {
         service.update(id, dto);
@@ -65,7 +72,7 @@ public class PranchaResource {
 
     // deleta uma prancha existente
     @DELETE
-    // @RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     @Path("/{id}")
     public Response delete(@PathParam("id") Long id) {
         service.delete(id);

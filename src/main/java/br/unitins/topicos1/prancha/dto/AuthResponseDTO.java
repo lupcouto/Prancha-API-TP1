@@ -5,7 +5,8 @@ public record AuthResponseDTO (
 
     Long id,
     String login,
-    String senha
+    String token,
+    String perfil
 
 ) {  
     
@@ -13,7 +14,8 @@ public record AuthResponseDTO (
         return new AuthResponseDTO (
             usuario.getId(),
             usuario.getLogin(),
-            usuario.getSenha()
+            usuario.getToken(),
+            usuario.getPerfil().name()
         );
     }
 }

@@ -1,6 +1,7 @@
 package br.unitins.topicos1.prancha.resource;
 import java.util.List;
 import br.unitins.topicos1.prancha.dto.ItemPedidoDTO;
+import br.unitins.topicos1.prancha.dto.PranchaDTO;
 import br.unitins.topicos1.prancha.model.ItemPedido;
 import br.unitins.topicos1.prancha.service.ItemPedidoService;
 import jakarta.annotation.security.RolesAllowed;
@@ -34,8 +35,7 @@ public class ItemPedidoResource {
            .stream()
            .map(item -> new ItemPedidoDTO(
                item.getPrancha().getId(),
-               item.getQuantidade(),
-               item.getPrecoUnit()
+               item.getQuantidade()
            ))
            .toList();
     }
@@ -48,8 +48,7 @@ public class ItemPedidoResource {
         return Response.status(Response.Status.CREATED)
             .entity(new ItemPedidoDTO(
                 item.getPrancha().getId(),
-                item.getQuantidade(),
-                item.getPrecoUnit()
+                item.getQuantidade()
             ))
             .build();
     }   

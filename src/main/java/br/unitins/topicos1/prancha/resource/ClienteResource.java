@@ -43,7 +43,6 @@ public class ClienteResource {
 
     // cadastra um novo cliente
     @POST
-    @RolesAllowed("USER")
     public Response incluir(@Valid ClienteDTO dto) {
         var cliente = clienteService.create(dto);
         return Response.status(Response.Status.CREATED).entity(cliente).build();

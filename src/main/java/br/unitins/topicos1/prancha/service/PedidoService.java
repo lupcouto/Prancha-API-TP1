@@ -9,6 +9,7 @@ public interface PedidoService {
     List<PedidoResponseDTO> findAll();
     List<PedidoResponseDTO> findByCliente(Long idCliente);
     PedidoResponseDTO findById(Long id);
+    List<PedidoResponseDTO> findByLogin(String login);
     PedidoResponseDTO create(PedidoDTO dto);
     void update(Long id, @Valid PedidoDTO dto);
     void delete(Long id);

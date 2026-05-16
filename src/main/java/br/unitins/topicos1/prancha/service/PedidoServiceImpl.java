@@ -1,4 +1,5 @@
 package br.unitins.topicos1.prancha.service;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import br.unitins.topicos1.prancha.model.*;
 import br.unitins.topicos1.prancha.repository.ClienteRepository;
 import br.unitins.topicos1.prancha.repository.PedidoRepository;
 import br.unitins.topicos1.prancha.repository.PranchaRepository;
+import br.unitins.topicos1.prancha.repository.UsuarioRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -27,6 +29,9 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Inject
     PranchaRepository pranchaRepository;
+
+    @Inject
+    UsuarioRepository usuarioRepository;
 
     // método para criar todo o pagamento
     private Pagamento criarPagamento(PedidoDTO dto) {
@@ -74,7 +79,8 @@ public class PedidoServiceImpl implements PedidoService {
             }
             default -> { // se escolher outra forma, erro
                 LOG.error("Forma de pagamento inválida: " + forma);
-                throw ValidationException.of("formaPagamento", "Forma de pagamento inválida. Use PIX, BOLETO ou CARTAO.");
+                throw ValidationException.of("formaPagamento",
+                        "Forma de pagamento inválida. Use PIX, BOLETO ou CARTAO.");
             }
         }
 
@@ -84,7 +90,8 @@ public class PedidoServiceImpl implements PedidoService {
         return pagamento;
     }
 
-    // buscando todos os registros no banco, convertendo para o response e retornando uma lista
+    // buscando todos os registros no banco, convertendo para o response e
+    // retornando uma lista
     @Override
     public List<PedidoResponseDTO> findAll() {
         LOG.info("Buscando todos os pedidos...");
@@ -125,6 +132,27 @@ public class PedidoServiceImpl implements PedidoService {
         }
 
         return toResponse(pedido);
+    }
+
+    @Override
+    public List<PedidoResponseDTO> findByLogin(String login) {
+
+        Usuario usuario = usuarioRepository.findByLogin(login);
+
+        if (usuario == null) {
+            throw ValidationException.of("login", "Usuário não encontrado");
+        }
+
+        Cliente cliente = usuario.getCliente();
+
+        if (cliente == null) {
+            throw ValidationException.of("cliente", "Cliente não encontrado para este usuário");
+        }
+
+        return pedidoRepository.findByCliente(cliente)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     // criando um pedido
@@ -255,48 +283,45 @@ public class PedidoServiceImpl implements PedidoService {
         // seleciona o pagamento associado ao pedido
         Pagamento pag = pedido.getPagamento();
 
-        // testa qual forma de pagamento foi escolhida. A que for, mostra o DTO, as que não forem, mostra tudo null
+        // testa qual forma de pagamento foi escolhida. A que for, mostra o DTO, as que
+        // não forem, mostra tudo null
         PixResponseDTO pixDTO = (pag instanceof Pix p) ? new PixResponseDTO(p) : null;
         BoletoResponseDTO boletoDTO = (pag instanceof Boleto b) ? new BoletoResponseDTO(b) : null;
         CartaoResponseDTO cartaoDTO = (pag instanceof Cartao c) ? new CartaoResponseDTO(c) : null;
 
         // exibe o cliente com seus dados no formato DTO
         ClienteDTO clienteDTO = new ClienteDTO(
-            pedido.getCliente().getNome(),
-            pedido.getCliente().getTelefone().getDdd(),
-            pedido.getCliente().getTelefone().getNumero(),
-            pedido.getCliente().getCpf()
-        );
+                pedido.getCliente().getNome(),
+                pedido.getCliente().getTelefone().getDdd(),
+                pedido.getCliente().getTelefone().getNumero(),
+                pedido.getCliente().getCpf(),
+                pedido.getCliente().getEmail());
 
         // exibe o endereço com seus dados no formato DTO
         EnderecoDTO enderecoDTO = new EnderecoDTO(
-            pedido.getEndereco().getCidade(),
-            pedido.getEndereco().getEstado(),
-            pedido.getEndereco().getCep()
-        );
+                pedido.getEndereco().getCidade(),
+                pedido.getEndereco().getEstado(),
+                pedido.getEndereco().getCep());
 
         // exibe a lista de itens com os seus dados no formato DTO
         List<ItemPedidoDTO> itensDTO = pedido.getItens().stream()
-            .map(item -> new ItemPedidoDTO(
-                item.getPrancha().getId(),
-                item.getQuantidade(),
-                item.getPrecoUnit()
-            ))
-            .toList();
+                .map(item -> new ItemPedidoDTO(
+                        item.getPrancha().getId(),
+                        item.getQuantidade()))
+                .toList();
 
         // exibe o response de pedido e o seu corpo no formato DTO
         return new PedidoResponseDTO(
-            pedido.getId(),
-            pedido.getDataPedido(),
-            pedido.getValorTotal(),
-            clienteDTO,
-            enderecoDTO,
-            pag.getClass().getSimpleName(),
-            pixDTO,
-            boletoDTO,
-            cartaoDTO,
-            itensDTO
-        );
+                pedido.getId(),
+                pedido.getDataPedido(),
+                pedido.getValorTotal(),
+                clienteDTO,
+                enderecoDTO,
+                pag.getClass().getSimpleName(),
+                pixDTO,
+                boletoDTO,
+                cartaoDTO,
+                itensDTO);
     }
 
     // simulando um pagamento manual

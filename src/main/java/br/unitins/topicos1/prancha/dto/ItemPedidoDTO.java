@@ -8,9 +8,6 @@ public record ItemPedidoDTO (
     Long idPrancha,
 
     @Positive(message = "A quantidade deve ser maior que zero")
-    Integer quantidade,
-
-    @NotNull(message = "O preço é obrigatório")
-    Double precoUnit
+    Integer quantidade
 
 ) {}

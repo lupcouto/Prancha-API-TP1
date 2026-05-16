@@ -28,14 +28,14 @@ public class TipoQuilhaResource {
 
     // busca todos os tipos de quilhas
     @GET
-    //@RolesAllowed({"ADM","USER"})
+    @RolesAllowed({"ADM","USER"})
     public List<TipoQuilha> getAll() {
         return service.findAll();
     }
 
     // busca todos os tipos de quilhas com um determinado nome
     @GET
-    //@RolesAllowed({"ADM","USER"})
+    @RolesAllowed({"ADM","USER"})
     @Path("/nome/{nome}")
     public List<TipoQuilha> getByNome(@PathParam("nome")String nome) {
         return service.findByNome(nome);
@@ -43,7 +43,7 @@ public class TipoQuilhaResource {
 
     // cadastra um novo tipo de quilha
     @POST
-    //@RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     public Response incluir(@Valid TipoQuilhaDTO dto) {
         var tipoQuilha = service.create(dto);
         return Response.status(Response.Status.CREATED).entity(tipoQuilha).build();
@@ -51,7 +51,7 @@ public class TipoQuilhaResource {
 
     // altera um tipo de quilha existente
     @PUT
-    //@RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     @Path("/{id}")
     public Response alterar(@PathParam("id") Long id, @Valid TipoQuilhaDTO dto) {
         service.update(id, dto);
@@ -60,7 +60,7 @@ public class TipoQuilhaResource {
 
     // deleta um tipo de quilha existente
     @DELETE
-    //@RolesAllowed("ADM")
+    @RolesAllowed("ADM")
     @Path("/{id}")
     public Response delete(@PathParam("id") Long id) {
         service.delete(id);
