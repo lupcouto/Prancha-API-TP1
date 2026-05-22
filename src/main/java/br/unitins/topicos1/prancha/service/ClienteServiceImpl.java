@@ -1,9 +1,12 @@
 package br.unitins.topicos1.prancha.service;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.jboss.logging.Logger;
 import br.unitins.topicos1.prancha.dto.ClienteDTO;
 import br.unitins.topicos1.prancha.exception.ValidationException;
 import br.unitins.topicos1.prancha.model.Cliente;
+import br.unitins.topicos1.prancha.model.Endereco;
 import br.unitins.topicos1.prancha.model.Telefone;
 import br.unitins.topicos1.prancha.repository.ClienteRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -111,11 +114,25 @@ public class ClienteServiceImpl implements ClienteService {
         telefone.setDdd(dto.ddd());
         telefone.setNumero(dto.numero());
 
-        // cria o cliente
+        Endereco endereco = new Endereco();
+        endereco.setCidade(dto.endereco().cidade());
+        endereco.setEstado(dto.endereco().estado());
+        endereco.setCep(dto.endereco().cep());
+        endereco.setBairro(dto.endereco().bairro());
+        endereco.setQuadra(dto.endereco().quadra());
+        endereco.setAlameda(dto.endereco().alameda());
+        endereco.setNumero(dto.endereco().numero());
+        endereco.setComplemento(dto.endereco().complemento());
+
         Cliente cliente = new Cliente();
         cliente.setNome(dto.nome());
         cliente.setTelefone(telefone);
         cliente.setCpf(dto.cpf());
+        cliente.setEmail(dto.email());
+        endereco.setCliente(cliente);
+        List<Endereco> enderecos = new ArrayList<>();
+        enderecos.add(endereco);
+        cliente.setEnderecos(enderecos);
 
         clienteRepository.persist(cliente);
 

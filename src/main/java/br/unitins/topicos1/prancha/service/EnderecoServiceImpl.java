@@ -1,9 +1,12 @@
 package br.unitins.topicos1.prancha.service;
+
 import java.util.List;
 import br.unitins.topicos1.prancha.dto.EnderecoDTO;
 import br.unitins.topicos1.prancha.exception.ValidationException;
 import br.unitins.topicos1.prancha.model.Endereco;
+import br.unitins.topicos1.prancha.model.Usuario;
 import br.unitins.topicos1.prancha.repository.EnderecoRepository;
+import br.unitins.topicos1.prancha.repository.UsuarioRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -14,6 +17,9 @@ public class EnderecoServiceImpl implements EnderecoService {
 
     @Inject
     EnderecoRepository enderecoRepository;
+
+    @Inject
+    UsuarioRepository usuarioRepository;
 
     // busca todos os registros no banco
     @Override
@@ -60,6 +66,18 @@ public class EnderecoServiceImpl implements EnderecoService {
         return endereco;
     }
 
+    @Override
+    public List<Endereco> findByLogin(String login) {
+
+        Usuario usuario = usuarioRepository.findByLogin(login);
+
+        if (usuario == null || usuario.getCliente() == null) {
+            throw ValidationException.of("login", "Usuário não encontrado");
+        }
+
+        return usuario.getCliente().getEnderecos();
+    }
+
     // criando um endereço
     @Override
     @Transactional
@@ -87,6 +105,11 @@ public class EnderecoServiceImpl implements EnderecoService {
         endereco.setCidade(dto.cidade());
         endereco.setEstado(dto.estado());
         endereco.setCep(dto.cep());
+        endereco.setBairro(dto.bairro());
+        endereco.setQuadra(dto.quadra());
+        endereco.setAlameda(dto.alameda());
+        endereco.setNumero(dto.numero());
+        endereco.setComplemento(dto.complemento());
 
         enderecoRepository.persist(endereco);
 
@@ -132,5 +155,5 @@ public class EnderecoServiceImpl implements EnderecoService {
         // deleta o endereço encontrado
         enderecoRepository.delete(endereco);
     }
-    
+
 }

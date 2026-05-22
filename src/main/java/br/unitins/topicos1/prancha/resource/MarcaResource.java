@@ -6,6 +6,7 @@ import java.util.List;
 import br.unitins.topicos1.prancha.dto.MarcaDTO;
 import br.unitins.topicos1.prancha.model.Marca;
 import br.unitins.topicos1.prancha.service.MarcaService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -32,13 +33,14 @@ public class MarcaResource {
 
     // busca todas as marcas
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @PermitAll
     public Response getAll(@QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("pageSize") @DefaultValue("10") int pageSize, @QueryParam("nome") String nome) {
         return Response.ok(service.findAll(page, pageSize, nome)).build();
     }
 
     @GET
+    @PermitAll
     @Path("/{id}")
     public Response getById(@PathParam("id") Long id) {
         return Response.ok(service.findById(id)).build();
@@ -46,7 +48,7 @@ public class MarcaResource {
 
     // busca todas as marcas com um determinado nome
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @PermitAll
     @Path("/nome/{nome}")
     public List<Marca> getByNome(@PathParam("nome") String nome) {
         return service.findByNome(nome);

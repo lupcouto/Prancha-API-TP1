@@ -10,6 +10,20 @@ public record EnderecoDTO (
     String estado, 
 
     @NotNull(message = "O CEP é obrigatório")
-    String cep 
+    String cep,
+
+    @NotNull(message = "O bairro é obrigatório")
+    String bairro,
+
+    @NotNull(message = "A quadra é obrigatória")
+    String quadra,
+
+    @NotNull(message = "A alameda é obrigatória")
+    String alameda,
+
+    @NotNull(message = "O número é obrigatório")
+    String numero,
+
+    String complemento
     
 ) {}

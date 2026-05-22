@@ -15,7 +15,9 @@ public record CadastroDTO(
 
         @NotBlank String login,
 
-        @NotBlank String senha
+        @NotBlank String senha,
+
+        EnderecoDTO endereco
 
 ) {
 

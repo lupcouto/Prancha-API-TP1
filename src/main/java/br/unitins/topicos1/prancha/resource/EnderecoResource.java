@@ -14,31 +14,46 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 @Path("/enderecos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class EnderecoResource {
 
-    // injetado para que os métodos do resource possam chamar a lógica de negócio (service) referente ao endereço
+    // injetado para que os métodos do resource possam chamar a lógica de negócio
+    // (service) referente ao endereço
     @Inject
     EnderecoService enderecoService;
 
     // busca todos os endereços
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @RolesAllowed({ "ADM", "USER" })
     public List<Endereco> getAll() {
         return enderecoService.findAll();
     }
 
     // busca todos os endereços com um determinado cpf
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @RolesAllowed({ "ADM", "USER" })
     @Path("/cep/{cep}")
     public List<Endereco> getByCep(@PathParam("cep") String cep) {
         return enderecoService.findByCep(cep);
+    }
+
+    @GET
+    @Path("/me")
+    @RolesAllowed({ "USER", "ADM" })
+    public List<Endereco> getMe(@Context SecurityContext ctx) {
+
+        System.out.println("LOGIN: " + ctx.getUserPrincipal());
+
+        String login = ctx.getUserPrincipal().getName();
+
+        return enderecoService.findByLogin(login);
     }
 
     // cadastra um novo endereço
@@ -66,5 +81,5 @@ public class EnderecoResource {
         enderecoService.delete(id);
         return Response.noContent().build();
     }
-    
+
 }

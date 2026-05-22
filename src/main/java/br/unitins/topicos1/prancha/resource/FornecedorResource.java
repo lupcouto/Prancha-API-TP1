@@ -4,6 +4,7 @@ import java.util.List;
 import br.unitins.topicos1.prancha.dto.FornecedorDTO;
 import br.unitins.topicos1.prancha.model.Fornecedor;
 import br.unitins.topicos1.prancha.service.FornecedorService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -32,7 +33,7 @@ public class FornecedorResource {
 
     // busca todos os fornecedores
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @PermitAll
     public Response getAll(@QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("pageSize") @DefaultValue("10") int pageSize, @QueryParam("cnpj") String cnpj) {
         return Response.ok(service.findAll(page, pageSize, cnpj)).build();
@@ -40,13 +41,14 @@ public class FornecedorResource {
 
     // busca todos os fornecedores com um determinado cnpj
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @PermitAll
     @Path("/cnpj/{cnpj}")
     public List<Fornecedor> getByCnpj(@PathParam("cnpj") String cnpj) {
         return service.findByCnpj(cnpj);
     }
 
     @GET
+    @PermitAll
     @Path("/{id}")
     public Response getById(@PathParam("id") Long id) {
         return Response.ok(service.findById(id)).build();

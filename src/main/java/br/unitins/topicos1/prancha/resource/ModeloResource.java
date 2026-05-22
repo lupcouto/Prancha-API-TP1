@@ -6,6 +6,7 @@ import br.unitins.topicos1.prancha.model.Modelo;
 import br.unitins.topicos1.prancha.service.ModeloService;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -32,7 +33,7 @@ public class ModeloResource {
 
     // busca todos os modelos
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @PermitAll
     public Response getAll(@QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("pageSize") @DefaultValue("10") int pageSize, @QueryParam("nome") String nome) {
         return Response.ok(service.findAll(page, pageSize, nome)).build();
@@ -40,13 +41,14 @@ public class ModeloResource {
 
     // busca todos os modelos com um determinado nome
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @PermitAll
     @Path("/nome/{nome}")
     public List<Modelo> getByNome(@PathParam("nome") String nome) {
         return service.findByNome(nome);
     }
 
     @GET
+    @PermitAll
     @Path("/{id}")
     public Response getById(@PathParam("id") Long id) {
         return Response.ok(service.findById(id)).build();

@@ -16,6 +16,8 @@ public record ClienteDTO (
     String cpf,
 
     @NotBlank(message = "O email é obrigatório")
-    String email
+    String email,
+
+    EnderecoDTO endereco
 
 ) {}

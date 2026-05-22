@@ -186,6 +186,11 @@ public class PedidoServiceImpl implements PedidoService {
         end.setCidade(dto.endereco().cidade());
         end.setEstado(dto.endereco().estado());
         end.setCep(dto.endereco().cep());
+        end.setBairro(dto.endereco().bairro());
+        end.setQuadra(dto.endereco().quadra());
+        end.setAlameda(dto.endereco().alameda());
+        end.setNumero(dto.endereco().numero());
+        end.setComplemento(dto.endereco().complemento());
         pedido.setEndereco(end);
 
         // chama o método para criar o pagamento e associar ao pedido
@@ -252,6 +257,11 @@ public class PedidoServiceImpl implements PedidoService {
         end.setCidade(dto.endereco().cidade());
         end.setEstado(dto.endereco().estado());
         end.setCep(dto.endereco().cep());
+        end.setBairro(dto.endereco().bairro());
+        end.setQuadra(dto.endereco().quadra());
+        end.setAlameda(dto.endereco().alameda());
+        end.setNumero(dto.endereco().numero());
+        end.setComplemento(dto.endereco().complemento());
 
         // altera a forma de pagamento
         pedido.setPagamento(criarPagamento(dto));
@@ -289,19 +299,24 @@ public class PedidoServiceImpl implements PedidoService {
         BoletoResponseDTO boletoDTO = (pag instanceof Boleto b) ? new BoletoResponseDTO(b) : null;
         CartaoResponseDTO cartaoDTO = (pag instanceof Cartao c) ? new CartaoResponseDTO(c) : null;
 
+        EnderecoDTO enderecoDTO = new EnderecoDTO(
+                pedido.getEndereco().getCidade(),
+                pedido.getEndereco().getEstado(),
+                pedido.getEndereco().getCep(),
+                pedido.getEndereco().getBairro(),
+                pedido.getEndereco().getQuadra(),
+                pedido.getEndereco().getAlameda(),
+                pedido.getEndereco().getNumero(),
+                pedido.getEndereco().getComplemento());
+
         // exibe o cliente com seus dados no formato DTO
         ClienteDTO clienteDTO = new ClienteDTO(
                 pedido.getCliente().getNome(),
                 pedido.getCliente().getTelefone().getDdd(),
                 pedido.getCliente().getTelefone().getNumero(),
                 pedido.getCliente().getCpf(),
-                pedido.getCliente().getEmail());
-
-        // exibe o endereço com seus dados no formato DTO
-        EnderecoDTO enderecoDTO = new EnderecoDTO(
-                pedido.getEndereco().getCidade(),
-                pedido.getEndereco().getEstado(),
-                pedido.getEndereco().getCep());
+                pedido.getCliente().getEmail(),
+                enderecoDTO);
 
         // exibe a lista de itens com os seus dados no formato DTO
         List<ItemPedidoDTO> itensDTO = pedido.getItens().stream()

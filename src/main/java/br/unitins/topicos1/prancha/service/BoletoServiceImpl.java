@@ -94,7 +94,7 @@ public class BoletoServiceImpl implements BoletoService {
 
         Boleto boletoEntity = boletoRepository.findById(id);
         if (boletoEntity == null) {
-            throw ValidationException.of("id", "Cartão não encontrado");
+            throw ValidationException.of("id", "Boleto não encontrado");
         }
 
         // alterando os campos

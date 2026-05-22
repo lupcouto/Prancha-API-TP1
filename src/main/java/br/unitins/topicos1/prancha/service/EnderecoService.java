@@ -9,6 +9,7 @@ public interface EnderecoService {
     List<Endereco> findAll();
     List<Endereco> findByCep(String cep);
     Endereco findById(Long id);
+    List<Endereco> findByLogin(String login);
     Endereco create(@Valid EnderecoDTO dto);
     void update(Long id, @Valid EnderecoDTO dto);
     void delete(Long id);

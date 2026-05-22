@@ -28,14 +28,14 @@ public class AdministradorResource {
 
     // busca todos os administradores cadastrados no sistema
     @GET
-    @RolesAllowed({"ADM","USER"}) 
+    @RolesAllowed({"ADM"}) 
     public List<Administrador> getAll() {
         return administradorService.findAll();
     }
 
     // busca todos os administradores com determinado nome
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @RolesAllowed({"ADM"})
     @Path("/nome/{nome}")
     public List<Administrador> getByNome(@PathParam("nome")String nome) {
         return administradorService.findByNome(nome);

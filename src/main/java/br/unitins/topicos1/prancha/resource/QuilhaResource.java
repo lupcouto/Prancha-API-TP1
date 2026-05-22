@@ -12,6 +12,7 @@ import br.unitins.topicos1.prancha.model.Quilha;
 import br.unitins.topicos1.prancha.model.TipoQuilha;
 import br.unitins.topicos1.prancha.repository.TipoQuilhaRepository;
 import br.unitins.topicos1.prancha.service.QuilhaService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -38,14 +39,14 @@ public class QuilhaResource {
 
     // busca todas as quilhas
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @PermitAll
     public Response getAll(@QueryParam("page") @DefaultValue("0") int page,@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
         return Response.ok(service.findAll(page, pageSize)).build();
     }
 
     // busca todas as quilhas com um determinado tipo
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @PermitAll
     @Path("/tipoquilha/{idTipoQuilha}")
     public List<Quilha> getByTipoQuilha(@PathParam("idTipoQuilha") Long id) {
         TipoQuilha tipoQuilha = tipoQuilhaRepository.findById(id);
@@ -53,7 +54,7 @@ public class QuilhaResource {
     }
 
     @GET
-    @RolesAllowed({"ADM","USER"})
+    @PermitAll
     @Path("/{id}")
     public Quilha getById(@PathParam("id") Long id) {
         return service.findById(id);
